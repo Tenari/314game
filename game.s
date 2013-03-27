@@ -2,26 +2,26 @@
 	.globl  main
 main:   
 	#start code----------------------------------------------------------
-		la 		$a0, Dorm1			#load the argument 'Dorm1' into $a0
-		jal 	Scene				#print and get response in $v0
-		
-		addi 	$t1, $zero, 1		# put 1 into $t1
-		beq 	$v0, $t1, win1		# if response = 1, jump to win1
+		la		$a0, Dorm1			#load the argument 'Dorm1' into $a0
+		jal		Scene				#print and get response in $v0
+
+		addi	$t1, $zero, 1		# put 1 into $t1
+		beq		$v0, $t1, win1		# if response = 1, jump to win1
 		j 		lose1				# else, jump to lose1
 		
 	win1:	
 		# system call to print win message 
-		li      $v0, 4           	# load appropriate system call code into register $v0 (print string is code 4)
-		la 		$a0, Win1			# load 'Win1' address into $a0
-        syscall						# do the call
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, Win1			# load 'Win1' address into $a0
+		syscall						# do the call
 		j 		end					# GAME IS OVER, so go to end
 		
 	lose1:
 		# system call to print lose message 
-		li      $v0, 4           	# load appropriate system call code into register $v0 (print string is code 4)
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, Lose1			# load 'Lose1' address into $a0
-        syscall						# do the call
-		j 		end					# GAME IS OVER, so go to end
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
 	#end code	---------------------------------------------------------
 
 #-------------------------------------------------------------------------	
@@ -30,17 +30,17 @@ main:
 #note that $a0 is changed by operation.
 Scene:
 	# system call to print message stored at $a0
-		li      $v0, 4          # load appropriate system call code into register $v0 (print string is code 4)
-        syscall					# $a0 already equals the address of the string, so do the call
+		li		$v0, 4			# load appropriate system call code into register $v0 (print string is code 4)
+		syscall					# $a0 already equals the address of the string, so do the call
 		
 	# system call to print prompt
-		li      $v0, 4          # load appropriate system call code into register $v0 (print string is code 4)
-		la      $a0, Prompt		# load 'prompt' address into $a0
-        syscall					# do the call
+		li		$v0, 4			# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, Prompt		# load 'prompt' address into $a0
+		syscall					# do the call
 		
 	# system call to get user number input
-        li      $v0, 5          # load appropriate system call code into register $v0 (read int is code 5)
-        syscall 				# do call -- returns answer in $v0
+		li		$v0, 5			# load appropriate system call code into register $v0 (read int is code 5)
+		syscall 				# do call -- returns answer in $v0
 	
 	# function is complete, return.
 		jr $ra
