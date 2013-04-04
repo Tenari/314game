@@ -1,37 +1,41 @@
  .text
 	.globl  main
 main:   
-	#start code----------------------------------------------------------
+#----------- First Scene: In the Dorm-------------------------------------
 		# Set the scene, and offer the player the chance to answer the door.
 		la		$a0, Dorm1			#load the argument 'Dorm1' into $a0
 		jal		Scene				#print and get response in $v0
 
-		# If they said yes, they win. else, ask them again.
+		# If they said yes, they continue. else, ask them again.
 		addi	$t1, $zero, 1		# put 1 into $t1
-		beq		$v0, $t1, win1		# if response = 1, jump to win1
+		beq		$v0, $t1, dormContinue1# if response = 1, jump to dormContinue1
 		
 		# Ask them again.
 		la		$a0, KnockAgain		# Load appropriate message into argument $a0 for Scene function
 		jal		Scene				# Guy knocks again. What do you do? $v0 holds int answer.
 		
 		# They either said yes or they lose.
-		beq		$v0, $t1, win1		# $t1 still - 1. Thus, if response = $t1, jump to win1
+		beq		$v0, $t1, dormContinue1# $t1 still - 1. Thus, if response = $t1, jump to dormContinue1
 		j 		lose1				# else, jump to lose1, because the player never answered the door.
 		
-	win1:	
+	dormContinue1:
 		# system call to print win message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, Win1			# load 'Win1' address into $a0
 		syscall						# do the call
 		j 		end					# GAME IS OVER, so go to end
 		
+#---------- End First Scene: In the Dorm----------------------------------
+#---------- Lose Points to Jump to ---------------------------------------
+
+	# The lose point for never answering the door.
 	lose1:
 		# system call to print lose message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, Lose1			# load 'Lose1' address into $a0
 		syscall						# do the call
 		j		end					# GAME IS OVER, so go to end
-	#end code	---------------------------------------------------------
+#---------- End Lose Points to Jump to -----------------------------------
 
 #-------------------------------------------------------------------------	
 #The scene function prints the standard scene message (adress passed in to $a0) and asks for user response
