@@ -2,7 +2,6 @@
 	.globl  main
 main:   
 #----------- First Scene: In the Dorm-------------------------------------
-		jal		displayInventory
 		# Set the scene, and offer the player the chance to answer the door.
 		la		$a0, Dorm1			# load the argument 'Dorm1' into $a0
 		la		$a1, Options1		# Options 1 is yes/no. The player either answers the door or not.
