@@ -2,6 +2,7 @@
 	.globl  main
 main:   
 #----------- First Scene: In the Dorm-------------------------------------
+		jal		displayInventory
 		# Set the scene, and offer the player the chance to answer the door.
 		la		$a0, Dorm1			# load the argument 'Dorm1' into $a0
 		la		$a1, Options1		# Options 1 is yes/no. The player either answers the door or not.
@@ -28,7 +29,7 @@ main:
 		j 		end					# GAME IS OVER, so go to end
 		
 #---------- End First Scene: In the Dorm----------------------------------
-#---------- Lose Points to Jump to ---------------------------------------
+#-------------- Lose Points/Labels ---------------------------------------
 
 	# The lose point for never answering the door.
 	lose1:
@@ -37,7 +38,7 @@ main:
 		la		$a0, Lose1			# load 'Lose1' address into $a0
 		syscall						# do the call
 		j		end					# GAME IS OVER, so go to end
-#---------- End Lose Points to Jump to -----------------------------------
+#------------- End Lose Points/Labels ------------------------------------
 
 #-------------------------------------------------------------------------	
 #The scene function prints the standard scene message (adress passed in to $a0) and asks for user response
@@ -66,6 +67,66 @@ Scene:
 		jr $ra
 #---------- end Scene function ------------------------------------------
 
+#-------------------------------------------------------------------------	
+# The displayInventory function prints the array that holds the inventory, 
+# INVEN.
+displayInventory:
+	# Initialize counters
+	la		$t0, LEN		# Load the address of the length of the inventory array into $t0
+	lw		$t8, 0($t0)		# Load the length of the inventory array into $t8
+	li		$t1, 0			# Start $t1 at 0. $t1 is the loop counter
+	li		$t0, 0			# Start $t0, the offset register, at 0
+	
+	# Print the header
+	li      $v0,4           # system call to print InvenHead
+	la      $a0, InvenHead	# load the address of InvenHead into argument $a0
+	syscall
+	
+	# The main function loop
+	displayInventoryLoop:
+	
+		add		$t0, $t1, $t1	#double $t1 (loop counter) into $t0
+		add		$t0, $t0, $t0	#double it again to get $t0 = currentOffset
+		
+		addi    $t1, $t1, 1     # increment loop counter by 1
+		
+		la      $t5, INVEN		# Load the address of the inventory array
+		add		$t5, $t5, $t0	# Add offset and array start to get actual address
+        lw      $t3, 0($t5)     # Load Inventory code from ARRAY[$t1 - 1]
+		
+		# If inventory code is 0, move on to the next part of the loop.
+		beq		$t3, $zero, displayInventoryLoopCheck
+		
+		# Else, decipher the code.
+		# If it's a 1, print wallet.
+		li		$t4, 1			# Set $t4 equal to 1
+		beq		$t3, $t4, PrintWallet	# Print the wallet
+		
+		# another code check.
+		
+		# all the code checks failed, so go to the next item.
+		j		displayInventoryLoopCheck
+		
+		PrintWallet:
+			li      $v0,4           # system call to print wallet
+			la      $a0, wallet		# load the address of wallet into argument $a0
+			syscall
+			j		displayInventoryLoopCheck	# We printed the thing, so do the next item
+        
+		displayInventoryLoopCheck:
+			beq     $t8, $t1, displayInventoryEnd  # if counter = arrayLen, goto exit label
+			j		displayInventoryLoop	# Do the loop again.
+	
+	# function is complete, return.
+	displayInventoryEnd:
+	
+		# Print the header
+		li      $v0,4           # system call to print InvenFoot
+		la      $a0, InvenFoot	# load the address of InvenFoot into argument $a0
+		syscall
+	
+		jr 		$ra
+#---------- end displayInventory function ------------------------------------------
 
 end:	
 	# Ask them to play again.
@@ -89,7 +150,12 @@ KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wa
 Lose1:		.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!"
 Win1:		.asciiz "\nYou answer the door, and go on to have grand adventures.\nYOU WIN!"
 
+InvenHead:	.asciiz "You are carrying:\n["
+wallet:		.asciiz "a wallet, "
+InvenFoot:	.asciiz "]\n"
+
 Options1:	.asciiz "[yes = 1, no = 2]\n"
+Options2:	.asciiz "[talk = 1, search = 2, open inventory = 3]\n"
 Prompt:   	.asciiz "\nWell? => "
 Again:		.asciiz "\n\n--------------------------------------------------------------------------------\nPlay Again?\n"
 
@@ -97,6 +163,5 @@ Again:		.asciiz "\n\n-----------------------------------------------------------
         .align 2
 
 # reserve a word space
-N: .space 4
-curr:	.word	0
-result: .space 	8
+INVEN:		.word 1, 0, 0, 0, 0, 0, 0, 0, 0, 0	# The inventory just stores ints. Ints represent specific items. 0 = blank slot.
+LEN:		.word 10
