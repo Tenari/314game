@@ -21,10 +21,17 @@ main:
 		j 		lose1				# else, jump to lose1, because the player never answered the door.
 		
 	dormContinue1:
+	# Let the guy in and he gives you a time machine and you go on to have grand adventures.
 		# system call to print win message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, Win1			# load 'Win1' address into $a0
 		syscall						# do the call
+		
+		# Add the time machine he gave you into your inventory.
+		addi	$a0, $zero, 1
+		addi	$a1, $zero, 2
+		jal		modifyInventory
+		
 		j 		end					# GAME IS OVER, so go to end
 		
 #---------- End First Scene: In the Dorm----------------------------------
@@ -101,6 +108,10 @@ displayInventory:
 		li		$t4, 1			# Set $t4 equal to 1
 		beq		$t3, $t4, PrintWallet	# Print the wallet
 		
+		# If it's a 2, print time machine.
+		li		$t4, 2			# Set $t4 equal to 1
+		beq		$t3, $t4, printTimeMachine# Print the time machine
+		
 		# another code check.
 		
 		# all the code checks failed, so go to the next item.
@@ -109,6 +120,12 @@ displayInventory:
 		PrintWallet:
 			li      $v0,4           # system call to print wallet
 			la      $a0, wallet		# load the address of wallet into argument $a0
+			syscall
+			j		displayInventoryLoopCheck	# We printed the thing, so do the next item
+		
+		printTimeMachine:
+			li      $v0,4           # system call to print wallet
+			la      $a0, timeMachine# load the address of timeMachine into argument $a0
 			syscall
 			j		displayInventoryLoopCheck	# We printed the thing, so do the next item
         
@@ -125,6 +142,35 @@ displayInventory:
 		syscall
 	
 		jr 		$ra
+#---------- end displayInventory function ------------------------------------------
+
+#-------------------------------------------------------------------------	
+# The modifyInventory function take two params ($a0 = array location, $a1=
+# item code) and puts them in the array, INVEN, which represents the 
+# inventory. The prints the new inventory.
+
+modifyInventory:
+	
+	# Push $ra onto stack.
+	addi	$sp, $sp, -4		# Decrement stack pointer
+	sw		$ra, 0($sp)			# Save $ra to stack
+	
+	# Add the item.
+	add		$t0, $a0, $a0		#double $a0 (array location) into $t0
+	add		$t0, $t0, $t0		#double it again to get $t0 = currentOffset
+		
+	la      $t5, INVEN			# Load the address of the start of the inventory array
+	add		$t5, $t5, $t0		# Add offset and array start to get actual address of the array location we are updating.
+	sw      $a1, 0($t5)     	# Store the passed item code argument in ARRAY[$a0]
+	
+	# Added the item, so print the inventory.
+	jal		displayInventory
+	
+	# Function is complete, pop $ra and return.
+	lw		$ra, 0($sp)			# Get return address from stack
+	addi	$sp, $sp, 4			# Increment stack pointer by 4
+	
+	jr 		$ra
 #---------- end displayInventory function ------------------------------------------
 
 end:	
@@ -146,11 +192,12 @@ end:
 Dorm1:		.asciiz "You are bored, sitting at your desk, thinking about playing another game of LoL. College isn't all it was cracked up to be. Suddenly, a knock at the door. Answer it?\n"
 KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wall. Soon, you hear another, louder knock at the door. Answer it?\n"
 
-Lose1:		.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!"
-Win1:		.asciiz "\nYou answer the door, and go on to have grand adventures.\nYOU WIN!"
+Lose1:		.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!\n"
+Win1:		.asciiz "\nYou answer the door, and a man comes in and gives you a time machine. You go on to have grand adventures.\nYOU WIN!\n"
 
-InvenHead:	.asciiz "You are carrying:\n["
+InvenHead:	.asciiz "\nYou are carrying:\n["
 wallet:		.asciiz "a wallet, "
+timeMachine:.asciiz "a hand-dandy time machine, "
 InvenFoot:	.asciiz "]\n"
 
 Options1:	.asciiz "[yes = 1, no = 2]\n"
