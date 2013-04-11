@@ -29,15 +29,43 @@ main:
 		
 	dormContinue1:
 	# Let the guy in and he gives you a time machine and you go on to have grand adventures.
-		# system call to print win message 
+		# system call to print continue message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
-		la		$a0, Win1			# load 'Win1' address into $a0
+		la		$a0, meetJeff		# load 'meetJeff' string's address into $a0
 		syscall						# do the call
 		
+		# Print jeff's first line of dialouge
+		la		$a0, jeff
+		la		$a1, jeffIntro1
+		jal		dialouge
+		
+		# Print jeff's second line of dialouge
+		la		$a0, jeff
+		la		$a1, jeffIntro2
+		jal		dialouge
+		
+		# Print jeff's offer
+		la		$a0, jeffOffer		# load the argument 'jeffOffer' into $a0
+		la		$a1, Options1		# Options 1 is yes/no. The player either takes the machine or not.
+		jal		Scene				# print and get response in $v0
+		
+		# They either said yes or they lose.
+		addi	$a0, $v0, 0			# Put response into the first argument for yesContinueNoLose function
+		la		$a1, lose2			# Put the 'wrong choice' label into second argument
+		la		$a2, win1			# Put the 'right choice' label into third argument
+		jal		yesContinueNoLose
+		j		$v0
+	
+	win1:
 		# Add the time machine he gave you into your inventory.
 		addi	$a0, $zero, 1
 		addi	$a1, $zero, 2
 		jal		modifyInventory
+		
+		# system call to print win message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, winMsg1		# load 'winMsg1' string's address into $a0
+		syscall						# do the call
 		
 		j 		end					# GAME IS OVER, so go to end
 		
@@ -48,7 +76,15 @@ main:
 	lose1:
 		# system call to print lose message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
-		la		$a0, Lose1			# load 'Lose1' address into $a0
+		la		$a0, loseMsg1		# load 'loseMsg1' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+	
+	# The lose point for not accepting the machine.
+	lose2:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg2		# load 'loseMsg2' address into $a0
 		syscall						# do the call
 		j		end					# GAME IS OVER, so go to end
 #------------- End Lose Points/Labels ------------------------------------
@@ -143,8 +179,8 @@ displayInventory:
 	# function is complete, return.
 	displayInventoryEnd:
 	
-		# Print the header
-		li      $v0,4           # system call to print InvenFoot
+		# Print the footer
+		li      $v0, 4			# system call to print InvenFoot
 		la      $a0, InvenFoot	# load the address of InvenFoot into argument $a0
 		syscall
 	
@@ -206,6 +242,27 @@ yesContinueNoLose:
 		jr 		$ra
 #---------- end yesContinueNoLose function ------------------------------------------
 
+#-------------------------------------------------------------------------	
+# The dialouge function takes two params:
+#	($a0 = speakerLabel, $a1 = lineLabel) 
+# and prints the text at speakerLabel followed by the text at lineLabel
+
+dialouge:
+
+	# Print the speakerLabel
+	li      $v0, 4			# System call to print text
+							# Address of speakerLabel already in $a0
+	syscall
+	
+	# Print the lineLabel
+	li		$v0, 4			# System call to print text
+	addi	$a0, $a1, 0		# Put lineLabel in syscall's first argument
+	syscall
+	
+	# Function is complete, return to caller.		
+	jr 		$ra
+#---------- end yesContinueNoLose function ------------------------------------------
+
 end:	
 	# Ask them to play again.
 	la		$a0, Again			# load the argument 'Again' into $a0
@@ -225,8 +282,16 @@ end:
 Dorm1:		.asciiz "You are bored, sitting at your desk, thinking about playing another game of LoL. College isn't all it was cracked up to be. Suddenly, a knock at the door. Answer it?\n"
 KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wall. Soon, you hear another, louder knock at the door. Answer it?\n"
 
-Lose1:		.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!\n"
-Win1:		.asciiz "\nYou answer the door, and a man comes in and gives you a time machine. You go on to have grand adventures.\nYOU WIN!\n"
+loseMsg1:	.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!\n"
+loseMsg2:	.asciiz "\nJeff looks upset and leaves. The world goes back to being as humdrum as it was before.\nYOU LOSE!\n"
+
+meetJeff:	.asciiz "\nYou answer the door, and a strange man in a perfectly white suit comes in.\n"
+jeff:		.asciiz "Jeff: "
+jeffIntro1:	.asciiz "\"Hello, my name is Jeffrey Bloomford, formerly of the Ministry of Causal and Temporal Affairs.\"\n"
+jeffIntro2:	.asciiz "\"Today, I'd like to offer you the ability to travel through time.\"\n"
+jeffOffer:	.asciiz "Jeff offers you a time machine. Take it?\n"
+
+winMsg1:		.asciiz "\nYou go on to have grand adventures.\nYOU WIN!\n"
 
 InvenHead:	.asciiz "\nYou are carrying:\n["
 wallet:		.asciiz "a wallet, "
