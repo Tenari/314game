@@ -2,23 +2,30 @@
 	.globl  main
 main:   
 #----------- First Scene: In the Dorm-------------------------------------
-		# Set the scene, and offer the player the chance to answer the door.
-		la		$a0, Dorm1			# load the argument 'Dorm1' into $a0
-		la		$a1, Options1		# Options 1 is yes/no. The player either answers the door or not.
-		jal		Scene				# print and get response in $v0
+	# Set the scene, and offer the player the chance to answer the door.
+	la		$a0, Dorm1			# load the argument 'Dorm1' into $a0
+	la		$a1, Options1		# Options 1 is yes/no. The player either answers the door or not.
+	jal		Scene				# print and get response in $v0
 
-		# If they said yes, they continue. else, ask them again.
-		addi	$t1, $zero, 1		# put 1 into $t1
-		beq		$v0, $t1, dormContinue1# if response = 1, jump to dormContinue1
+	# If they said yes, they continue. else, ask them again.
+	addi	$a0, $v0, 0			# Put response into the first argument for yesContinueNoLose function
+	la		$a1, almostLose1	# Put the 'wrong choice' label into second argument
+	la		$a2, dormContinue1	# Put the 'right choice' label into third argument
+	jal		yesContinueNoLose
+	j		$v0
 		
+	almostLose1:	
 		# Ask them again.
 		la		$a0, KnockAgain		# Load appropriate message into argument $a0 for Scene function
 		la		$a1, Options1		# Options 1 is yes/no. The player either answers the door or not.
 		jal		Scene				# Guy knocks again. What do you do? $v0 holds int answer.
 		
 		# They either said yes or they lose.
-		beq		$v0, $t1, dormContinue1# $t1 still - 1. Thus, if response = $t1, jump to dormContinue1
-		j 		lose1				# else, jump to lose1, because the player never answered the door.
+		addi	$a0, $v0, 0			# Put response into the first argument for yesContinueNoLose function
+		la		$a1, lose1			# Put the 'wrong choice' label into second argument
+		la		$a2, dormContinue1	# Put the 'right choice' label into third argument
+		jal		yesContinueNoLose
+		j		$v0
 		
 	dormContinue1:
 	# Let the guy in and he gives you a time machine and you go on to have grand adventures.
@@ -147,7 +154,7 @@ displayInventory:
 #-------------------------------------------------------------------------	
 # The modifyInventory function take two params ($a0 = array location, $a1=
 # item code) and puts them in the array, INVEN, which represents the 
-# inventory. The prints the new inventory.
+# inventory. Then prints the new inventory.
 
 modifyInventory:
 	
@@ -172,6 +179,32 @@ modifyInventory:
 	
 	jr 		$ra
 #---------- end displayInventory function ------------------------------------------
+
+#-------------------------------------------------------------------------	
+# The yesContinueNoLose function takes three params:
+#	($a0 = int response, $a1 = loseLabel, $a2 = continueLabel) 
+# and decides where to jump to, leaving that label location in $v0
+# If the response was a yes (a '1') $v0 = continueLabel.
+# otherwise, $v0 = loseLabel
+
+yesContinueNoLose:
+
+	# If they said yes, they continue. else, ask them again.
+	addi	$t1, $zero, 1			# Put 1 into $t1
+	beq		$a0, $t1, setYesLabelOut# If response = 1, jump to setYesLabelOut
+									# Else, just continue. Next section labeled for convinience.
+	setNoLabelOut:
+		addi 	$v0, $a1, 0			# Set $v0 to the address of the passed in loseLabel
+		j		endYesContinueNoLose# Jump to the end--this function is done.
+		
+	setYesLabelOut:
+		addi 	$v0, $a2, 0			# Set $v0 to the address of the passed in continueLabel
+		j		endYesContinueNoLose
+		
+	endYesContinueNoLose:
+		# Function is complete, return to caller.		
+		jr 		$ra
+#---------- end yesContinueNoLose function ------------------------------------------
 
 end:	
 	# Ask them to play again.
