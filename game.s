@@ -113,6 +113,11 @@ main:
 
 #------------------- Ancient Egypt Scene----------------------------------
 ancientEgypt:
+	# Set the scene, and offer the player the chance to answer the door.
+	la		$a0, AEscene1		# load the scene setting message into $a0
+	la		$a1, Options2		# Basic scene options
+	jal		Scene				# print and get response in $v0
+
 	j		win1
 #--------------- End Ancient Egypt Scene----------------------------------
 
@@ -344,16 +349,16 @@ Dorm1:		.asciiz "You are bored, sitting at your desk, thinking about playing ano
 KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wall. Soon, you hear another, louder knock at the door. Answer it?\n"
 
 # The text for the Ancient Egypt section of the game
-AEscene1:	.asciiz ""
+AEscene1:	.asciiz "\nYou fly thorugh time and space!!!\n...\nIt's not as cool as it sounds.\nYou arrive in what you hope is the friendly section of Ancient Egypt.\n...\nIt's not.\nAn angry looking man walks up to you, yelling in a language that you don't speak.\nWhat do you do?\n"
 
 # The text for the Ancient America section of the game
-AAscene1:	.asciiz ""
+AAscene1:	.asciiz "\n\n"
 
 # The text for the Future Egypt section of the game
-FEscene1:	.asciiz ""
+FEscene1:	.asciiz "\n\n"
 
 # The text for the Future America section of the game
-FAscene1:	.asciiz ""
+FAscene1:	.asciiz "\n\n"
 
 loseMsg1:	.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!\n"
 loseMsg2:	.asciiz "\nJeff looks upset and leaves. The world goes back to being as humdrum as it was before.\nYOU LOSE!\n"
