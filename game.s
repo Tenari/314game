@@ -343,6 +343,18 @@ end:
 Dorm1:		.asciiz "You are bored, sitting at your desk, thinking about playing another game of LoL. College isn't all it was cracked up to be. Suddenly, a knock at the door. Answer it?\n"
 KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wall. Soon, you hear another, louder knock at the door. Answer it?\n"
 
+# The text for the Ancient Egypt section of the game
+AEscene1:	.asciiz ""
+
+# The text for the Ancient America section of the game
+AAscene1:	.asciiz ""
+
+# The text for the Future Egypt section of the game
+FEscene1:	.asciiz ""
+
+# The text for the Future America section of the game
+FAscene1:	.asciiz ""
+
 loseMsg1:	.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!\n"
 loseMsg2:	.asciiz "\nJeff looks upset and leaves. The world goes back to being as humdrum as it was before.\nYOU LOSE!\n"
 
@@ -375,4 +387,4 @@ Again:		.asciiz "\n\n-----------------------------------------------------------
 
 # reserve a word space
 INVEN:		.word 1, 0, 0, 0, 0, 0, 0, 0, 0, 0	# The inventory just stores ints. Ints represent specific items. 0 = blank slot.
-LEN:		.word 10
+LEN:		.word 10	# constant configuration number that sets teh length of the inventory array
