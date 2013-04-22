@@ -52,16 +52,56 @@ main:
 		# They either said yes or they lose.
 		addi	$a0, $v0, 0			# Put response into the first argument for yesContinueNoLose function
 		la		$a1, lose2			# Put the 'wrong choice' label into second argument
-		la		$a2, win1			# Put the 'right choice' label into third argument
+		la		$a2, dormContinue2	# Put the 'right choice' label into third argument
 		jal		yesContinueNoLose
 		j		$v0
-	
-	win1:
+		
+	dormContinue2:
+	#
 		# Add the time machine he gave you into your inventory.
 		addi	$a0, $zero, 1
 		addi	$a1, $zero, 2
 		jal		modifyInventory
 		
+		# Jeff says: "You use it by just selecting where you want to go, and when you want to arrive."
+		la		$a0, jeff
+		la		$a1, jeffHowToUse
+		jal		dialouge
+		
+		# Ask the player where he wants to go.
+		la		$a0, travel1		# Load the scene message
+		la		$a1, Options3		# is [Egypt, America]
+		jal		Scene				# print and get response in $v0
+		
+		# Push $v0 onto stack.
+		addi	$sp, $sp, -4		# Decrement stack pointer
+		sw		$v0, 0($sp)			# Save $ra to stack
+		
+		# Ask the player WHEN he wants to go.
+		la		$a0, travel2		# Load the scene message
+		la		$a1, Options4		# is [Ancient, 20 yrs forward]
+		jal		Scene				# print and get response in $v0
+		
+		# Get the first response into $t0
+		lw		$t0, 0($sp)			# Get first response into $t0 from stack
+		addi	$sp, $sp, 4			# Increment stack pointer by 4
+		
+		# Decide where to go from here, based on their responses (in $t0, and $v0)
+		addi	$t1, $zero, 1		# Set $t1 = 1
+		beq		$t0, $t1, egyptChoice	# If $t0 = 1, then thye picked egypt
+		j		americaChoice		# Else, they picked America
+		
+	egyptChoice:	
+		beq		$v0, $t1, ancientEgypt
+		j		futureEgypt
+	
+	americaChoice:
+		beq		$v0, $t1, ancientAmerica
+		j		futureAmerica
+		
+		
+	
+	win1:
 		# system call to print win message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, winMsg1		# load 'winMsg1' string's address into $a0
@@ -70,6 +110,27 @@ main:
 		j 		end					# GAME IS OVER, so go to end
 		
 #---------- End First Scene: In the Dorm----------------------------------
+
+#------------------- Ancient Egypt Scene----------------------------------
+ancientEgypt:
+	j		win1
+#--------------- End Ancient Egypt Scene----------------------------------
+
+#-------------------- Future Egypt Scene----------------------------------
+futureEgypt:
+	j		win1
+#---------------- End Future Egypt Scene----------------------------------
+
+#------------------- Ancient America Scene--------------------------------
+ancientAmerica:
+	j		win1
+#--------------- End Ancient America Scene--------------------------------
+
+#-------------------- Future America Scene--------------------------------
+futureAmerica:
+	j		win1
+#---------------- End Future America Scene--------------------------------
+
 #-------------- Lose Points/Labels ---------------------------------------
 
 	# The lose point for never answering the door.
@@ -289,17 +350,23 @@ meetJeff:	.asciiz "\nYou answer the door, and a strange man in a perfectly white
 jeff:		.asciiz "Jeff: "
 jeffIntro1:	.asciiz "\"Hello, my name is Jeffrey Bloomford, formerly of the Ministry of Causal and Temporal Affairs.\"\n"
 jeffIntro2:	.asciiz "\"Today, I'd like to offer you the ability to travel through time.\"\n"
+jeffHowToUse:.asciiz "\"You use it by selecting where you want to go, and when you want to arrive.\"\n"
 jeffOffer:	.asciiz "Jeff offers you a time machine. Take it?\n"
 
-winMsg1:		.asciiz "\nYou go on to have grand adventures.\nYOU WIN!\n"
+winMsg1:	.asciiz "\nYou go on to have grand adventures.\nYOU WIN!\n"
 
 InvenHead:	.asciiz "\nYou are carrying:\n["
 wallet:		.asciiz "a wallet, "
 timeMachine:.asciiz "a hand-dandy time machine, "
 InvenFoot:	.asciiz "]\n"
 
-Options1:	.asciiz "[yes = 1, no = 2]\n"
-Options2:	.asciiz "[talk = 1, search = 2, open inventory = 3]\n"
+travel1:	.asciiz "Where do you want to go?\n"
+travel2:	.asciiz "When do you want to get there?\n"
+
+Options1:	.asciiz "[yes = 1, no = 2]\n"							# Basic yes/no
+Options2:	.asciiz "[talk = 1, search = 2, open inventory = 3]\n"	# Usual scene options.
+Options3:	.asciiz "[Egypt = 1, America = 2]"						# Location travel options
+Options4:	.asciiz "[Ancient Times = 1, Twenty years ahead = 2]"	# Time travel options
 Prompt:   	.asciiz "\nWell? => "
 Again:		.asciiz "\n\n--------------------------------------------------------------------------------\nPlay Again?\n"
 
