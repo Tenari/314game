@@ -329,6 +329,31 @@ dialouge:
 	jr 		$ra
 #---------- end yesContinueNoLose function ------------------------------------------
 
+#-------------------------------------------------------------------------	
+# handleOptions2 takes the int response to an options2 question (in $a0)
+# and decides what to do.
+handleOptions2:
+	# Setup possible responses temp constants
+	addi	$t1, $zero, 1	# $t1 = 1
+	addi	$t2, $zero, 2	# $t2 = 2
+	
+	beq		$a0, $t1, handleTalk
+	beq		$a0, $t2, handleSearch
+	j		handleOpenInven
+	
+	handleTalk:
+		# Do stuff
+		
+	handleSearch:
+		# Do stuff
+		
+	handleOpenInven:
+		# Do stuff
+		
+	# function is complete, return.
+	jr $ra
+#---------- end Scene function ------------------------------------------
+
 end:	
 	# Ask them to play again.
 	la		$a0, Again			# load the argument 'Again' into $a0
