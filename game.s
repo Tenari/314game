@@ -111,13 +111,18 @@ main:
 		
 #---------- End First Scene: In the Dorm----------------------------------
 
-#------------------- Ancient Egypt Scene----------------------------------
+#------------------- Ancient Egypt Scene CODE: 1--------------------------
 ancientEgypt:
 	# Set the scene, and offer the player the chance to answer the door.
 	la		$a0, AEscene1		# load the scene setting message into $a0
 	la		$a1, Options2		# Basic scene options
 	jal		Scene				# print and get response in $v0
-
+	
+	# Handle the response
+	addi	$a0, $v0, 0			# Set the input parameter to response
+	addi	$a1, $zero, 1		# Set the scene code
+	jal		handleOptions2
+	
 	j		win1
 #--------------- End Ancient Egypt Scene----------------------------------
 
@@ -251,9 +256,9 @@ displayInventory:
 		syscall
 	
 		jr 		$ra
-#---------- end displayInventory function ------------------------------------------
+#---------- end displayInventory function -------------------------------------
 
-#-------------------------------------------------------------------------	
+#------------------------------------------------------------------------------
 # The modifyInventory function take two params ($a0 = array location, $a1=
 # item code) and puts them in the array, INVEN, which represents the 
 # inventory. Then prints the new inventory.
@@ -280,7 +285,7 @@ modifyInventory:
 	addi	$sp, $sp, 4			# Increment stack pointer by 4
 	
 	jr 		$ra
-#---------- end displayInventory function ------------------------------------------
+#---------- end modifyInventory function --------------------------------------
 
 #-------------------------------------------------------------------------	
 # The yesContinueNoLose function takes three params:
@@ -331,27 +336,38 @@ dialouge:
 
 #-------------------------------------------------------------------------	
 # handleOptions2 takes the int response to an options2 question (in $a0)
+# and an int scene-code (in $a1),
 # and decides what to do.
 handleOptions2:
+	# Push $ra onto stack.
+	addi	$sp, $sp, -4		# Decrement stack pointer
+	sw		$ra, 0($sp)			# Save $ra to stack
+
 	# Setup possible responses temp constants
 	addi	$t1, $zero, 1	# $t1 = 1
 	addi	$t2, $zero, 2	# $t2 = 2
 	
+	# If input is 1 do... if 2 do ... else do ...
 	beq		$a0, $t1, handleTalk
 	beq		$a0, $t2, handleSearch
 	j		handleOpenInven
 	
 	handleTalk:
-		# Do stuff
+		addi	$a0, $a1, 0		# Put scene-code in first param
+		jal		getSceneTalk
 		
 	handleSearch:
-		# Do stuff
+		addi	$a0, $a1, 0		# Put scene-code in first param
+		jal		getSceneSearch
 		
 	handleOpenInven:
-		# Do stuff
+		jal		displayInventory
 		
-	# function is complete, return.
-	jr $ra
+		
+	# Function is complete, pop $ra and return.
+	lw		$ra, 0($sp)			# Get return address from stack
+	addi	$sp, $sp, 4			# Increment stack pointer by 4
+	jr		$ra
 #---------- end Scene function ------------------------------------------
 
 end:	
@@ -397,6 +413,7 @@ jeffOffer:	.asciiz "Jeff offers you a time machine. Take it?\n"
 
 winMsg1:	.asciiz "\nYou go on to have grand adventures.\nYOU WIN!\n"
 
+InvenAccess:.asciiz "Which item would you like to use? (number left to right from 1)\n"
 InvenHead:	.asciiz "\nYou are carrying:\n["
 wallet:		.asciiz "a wallet, "
 timeMachine:.asciiz "a hand-dandy time machine, "
