@@ -574,6 +574,8 @@ wallet:		.asciiz "a wallet, "
 timeMachine:.asciiz "a hand-dandy time machine, "
 InvenFoot:	.asciiz "]\n"
 
+diamond:	.asciiz "      ^\n     /|\\n    / ^ \\n   / / \ \\n  / / ^ \ \\n  \ \ v / /\n   \ \ / /\n    \ v /\n     \|/\n      v\n"
+
 travel1:	.asciiz "Where do you want to go?\n"
 travel2:	.asciiz "When do you want to get there?\n"
 
