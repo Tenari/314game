@@ -68,38 +68,8 @@ main:
 		la		$a1, jeffHowToUse
 		jal		dialouge
 		
-		# Ask the player where he wants to go.
-		la		$a0, travel1		# Load the scene message
-		la		$a1, Options3		# is [Egypt, America]
-		jal		Scene				# print and get response in $v0
-		
-		# Push $v0 onto stack.
-		addi	$sp, $sp, -4		# Decrement stack pointer
-		sw		$v0, 0($sp)			# Save $ra to stack
-		
-		# Ask the player WHEN he wants to go.
-		la		$a0, travel2		# Load the scene message
-		la		$a1, Options4		# is [Ancient, 20 yrs forward]
-		jal		Scene				# print and get response in $v0
-		
-		# Get the first response into $t0
-		lw		$t0, 0($sp)			# Get first response into $t0 from stack
-		addi	$sp, $sp, 4			# Increment stack pointer by 4
-		
-		# Decide where to go from here, based on their responses (in $t0, and $v0)
-		addi	$t1, $zero, 1		# Set $t1 = 1
-		beq		$t0, $t1, egyptChoice	# If $t0 = 1, then thye picked egypt
-		j		americaChoice		# Else, they picked America
-		
-	egyptChoice:	
-		beq		$v0, $t1, ancientEgypt
-		j		futureEgypt
-	
-	americaChoice:
-		beq		$v0, $t1, ancientAmerica
-		j		futureAmerica
-		
-		
+		jal		travelThroughTime	# Gets the address to jump to in $v0
+		j		$v0					# Jump to the address
 	
 	win1:
 		# system call to print win message 
@@ -111,7 +81,7 @@ main:
 		
 #---------- End First Scene: In the Dorm----------------------------------
 
-#------------------- Ancient Egypt Scene CODE: 1--------------------------
+#------------------- Ancient Egypt Scene CODE: 1-------------------------------
 ancientEgypt:
 	# Set the scene, and offer the player the chance to answer the door.
 	la		$a0, AEscene1		# load the scene setting message into $a0
@@ -124,22 +94,52 @@ ancientEgypt:
 	jal		handleOptions2
 	
 	j		win1
-#--------------- End Ancient Egypt Scene----------------------------------
+#--------------- End Ancient Egypt Scene---------------------------------------
 
-#-------------------- Future Egypt Scene----------------------------------
+#-------------------- Future Egypt Scene CODE: 2-------------------------------
 futureEgypt:
+	# Set the scene, and offer the player the chance to answer the door.
+	la		$a0, FEscene1		# load the scene setting message into $a0
+	la		$a1, Options2		# Basic scene options
+	jal		Scene				# print and get response in $v0
+	
+	# Handle the response
+	addi	$a0, $v0, 0			# Set the input parameter to response
+	addi	$a1, $zero, 2		# Set the scene code
+	jal		handleOptions2
+	
 	j		win1
-#---------------- End Future Egypt Scene----------------------------------
+#---------------- End Future Egypt Scene---------------------------------------
 
-#------------------- Ancient America Scene--------------------------------
+#------------------- Ancient America Scene CODE: 3-----------------------------
 ancientAmerica:
+	# Set the scene, and offer the player the chance to answer the door.
+	la		$a0, AAscene1		# load the scene setting message into $a0
+	la		$a1, Options2		# Basic scene options
+	jal		Scene				# print and get response in $v0
+	
+	# Handle the response
+	addi	$a0, $v0, 0			# Set the input parameter to response
+	addi	$a1, $zero, 3		# Set the scene code
+	jal		handleOptions2
+	
 	j		win1
-#--------------- End Ancient America Scene--------------------------------
+#--------------- End Ancient America Scene-------------------------------------
 
-#-------------------- Future America Scene--------------------------------
+#-------------------- Future America Scene CODE: 4-----------------------------
 futureAmerica:
+	# Set the scene, and offer the player the chance to answer the door.
+	la		$a0, FAscene1		# load the scene setting message into $a0
+	la		$a1, Options2		# Basic scene options
+	jal		Scene				# print and get response in $v0
+	
+	# Handle the response
+	addi	$a0, $v0, 0			# Set the input parameter to response
+	addi	$a1, $zero, 4		# Set the scene code
+	jal		handleOptions2
+	
 	j		win1
-#---------------- End Future America Scene--------------------------------
+#---------------- End Future America Scene-------------------------------------
 
 #-------------- Lose Points/Labels ---------------------------------------
 
@@ -311,9 +311,9 @@ yesContinueNoLose:
 	endYesContinueNoLose:
 		# Function is complete, return to caller.		
 		jr 		$ra
-#---------- end yesContinueNoLose function ------------------------------------------
+#---------- end yesContinueNoLose function ------------------------------------
 
-#-------------------------------------------------------------------------	
+#------------------------------------------------------------------------------	
 # The dialouge function takes two params:
 #	($a0 = speakerLabel, $a1 = lineLabel) 
 # and prints the text at speakerLabel followed by the text at lineLabel
@@ -332,9 +332,9 @@ dialouge:
 	
 	# Function is complete, return to caller.		
 	jr 		$ra
-#---------- end yesContinueNoLose function ------------------------------------------
+#---------- end yesContinueNoLose function ------------------------------------
 
-#-------------------------------------------------------------------------	
+#------------------------------------------------------------------------------
 # handleOptions2 takes the int response to an options2 question (in $a0)
 # and an int scene-code (in $a1),
 # and decides what to do.
@@ -356,21 +356,129 @@ handleOptions2:
 		addi	$a0, $a1, 0		# Put scene-code in first param
 		jal		getSceneTalk
 		
+		j		endHandleOptions2
+		
 	handleSearch:
 		addi	$a0, $a1, 0		# Put scene-code in first param
 		jal		getSceneSearch
 		
+		j		endHandleOptions2
+		
 	handleOpenInven:
 		jal		displayInventory
 		
+		# Ask them which item to use.
+		la		$a0, Nothing
+		la		$a1, InvenAccess
+		jal		Scene
 		
-	# Function is complete, pop $ra and return.
-	lw		$ra, 0($sp)			# Get return address from stack
-	addi	$sp, $sp, 4			# Increment stack pointer by 4
-	jr		$ra
-#---------- end Scene function ------------------------------------------
+		addi	$t2, $zero, 2
+		bne		$v0, $t2, endHandleOptions2
+		
+		jal		travelThroughTime
+		j		$v0
+		
+	endHandleOptions2:	
+		# Function is complete, pop $ra and return.
+		lw		$ra, 0($sp)			# Get return address from stack
+		addi	$sp, $sp, 4			# Increment stack pointer by 4
+		jr		$ra
+#---------- end handleOptions2 function ---------------------------------------
 
-end:	
+#------------------------------------------------------------------------------
+# getSceneTalk does nothing
+getSceneTalk:
+	# Push $ra onto stack.
+	addi	$sp, $sp, -4		# Decrement stack pointer
+	sw		$ra, 0($sp)			# Save $ra to stack
+
+	
+	endGetSceneTalk:	
+		# Function is complete, pop $ra and return.
+		lw		$ra, 0($sp)			# Get return address from stack
+		addi	$sp, $sp, 4			# Increment stack pointer by 4
+		jr		$ra
+#---------- end handleOptions2 function ---------------------------------------
+
+#------------------------------------------------------------------------------
+# getSceneSearch does nothing
+getSceneSearch:
+	# Push $ra onto stack.
+	addi	$sp, $sp, -4		# Decrement stack pointer
+	sw		$ra, 0($sp)			# Save $ra to stack
+
+	
+	endGetSceneSearch:	
+		# Function is complete, pop $ra and return.
+		lw		$ra, 0($sp)			# Get return address from stack
+		addi	$sp, $sp, 4			# Increment stack pointer by 4
+		jr		$ra
+#---------- end handleOptions2 function ---------------------------------------
+
+#------------------------------------------------------------------------------
+# travelThroughTime returns an address to jump to, based on the player's choice
+# The address is in $v0.
+travelThroughTime:
+	# Push $ra onto stack.
+	addi	$sp, $sp, -4		# Decrement stack pointer
+	sw		$ra, 0($sp)			# Save $ra to stack
+
+	# Ask the player where he wants to go.
+	la		$a0, travel1		# Load the scene message
+	la		$a1, Options3		# is [Egypt, America]
+	jal		Scene				# print and get response in $v0
+	
+	# Push $v0 onto stack.
+	addi	$sp, $sp, -4		# Decrement stack pointer
+	sw		$v0, 0($sp)			# Save $ra to stack
+	
+	# Ask the player WHEN he wants to go.
+	la		$a0, travel2		# Load the scene message
+	la		$a1, Options4		# is [Ancient, 20 yrs forward]
+	jal		Scene				# print and get response in $v0
+	
+	# Get the first response into $t0
+	lw		$t0, 0($sp)			# Get first response into $t0 from stack
+	addi	$sp, $sp, 4			# Increment stack pointer by 4
+	
+	# Decide where to go from here, based on their responses (in $t0, and $v0)
+	addi	$t1, $zero, 1		# Set $t1 = 1
+	beq		$t0, $t1, egyptChoice	# If $t0 = 1, then thye picked egypt
+	j		americaChoice		# Else, they picked America
+		
+	egyptChoice:	
+		beq		$v0, $t1, ancientEgyptTravel
+		j		futureEgyptTravel
+	
+	americaChoice:
+		beq		$v0, $t1, ancientAmericaTravel
+		j		futureAmericaTravel
+		
+		
+	ancientEgyptTravel:
+		la		$v0, ancientEgypt
+		j		endTravelThroughTime
+	
+	futureEgyptTravel:
+		la		$v0, futureEgypt
+		j		endTravelThroughTime
+	
+	ancientAmericaTravel:
+		la		$v0, ancientAmerica
+		j		endTravelThroughTime
+	
+	futureAmericaTravel:
+		la		$v0, futureAmerica
+		j		endTravelThroughTime
+	
+	endTravelThroughTime:
+		# Function is complete, pop $ra and return.
+		lw		$ra, 0($sp)			# Get return address from stack
+		addi	$sp, $sp, 4			# Increment stack pointer by 4
+		jr		$ra
+#---------- end travelThroughTime function ------------------------------------
+
+end:
 	# Ask them to play again.
 	la		$a0, Again			# load the argument 'Again' into $a0
 	la		$a1, Options1		# Options 1 is yes/no. The player either wants to play or not.
@@ -384,8 +492,9 @@ end:
 	li      $v0, 10         # system call 10; exit
 	syscall
 		
-#-----  DATA ------------------------------------------------------------
+#-----  DATA ------------------------------------------------------------------
         .data
+Nothing:	.asciiz ""
 Dorm1:		.asciiz "You are bored, sitting at your desk, thinking about playing another game of LoL. College isn't all it was cracked up to be. Suddenly, a knock at the door. Answer it?\n"
 KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wall. Soon, you hear another, louder knock at the door. Answer it?\n"
 
@@ -393,7 +502,7 @@ KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wa
 AEscene1:	.asciiz "\nYou fly thorugh time and space!!!\n...\nIt's not as cool as it sounds.\nYou arrive in what you hope is the friendly section of Ancient Egypt.\n...\nIt's not.\nAn angry looking man walks up to you, yelling in a language that you don't speak.\nWhat do you do?\n"
 
 # The text for the Ancient America section of the game
-AAscene1:	.asciiz "\n\n"
+AAscene1:	.asciiz "\nYou fly thorugh time and space!!!\n...\nIt's pretty cool.\nYou arrive in what appears to be the friendly section of Ancient America.\n...\nA native girl approaches.\nWhat do you do?\n"
 
 # The text for the Future Egypt section of the game
 FEscene1:	.asciiz "\n\n"
