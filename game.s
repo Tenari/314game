@@ -91,7 +91,14 @@ ancientEgypt:
 	# Handle the response
 	addi	$a0, $v0, 0			# Set the input parameter to response
 	addi	$a1, $zero, 1		# Set the scene code
+	la		$a2, AETalk			# Set the talk jump point
+	la		$a3, AESearch		# Set the search jump point
 	jal		handleOptions2
+	jr		$v0
+	
+	AETalk:
+	
+	AESearch:
 	
 	j		win1
 #--------------- End Ancient Egypt Scene---------------------------------------
@@ -106,7 +113,14 @@ futureEgypt:
 	# Handle the response
 	addi	$a0, $v0, 0			# Set the input parameter to response
 	addi	$a1, $zero, 2		# Set the scene code
+	la		$a2, FETalk			# Set the talk jump point
+	la		$a3, FESearch		# Set the search jump point
 	jal		handleOptions2
+	jr		$v0
+	
+	FETalk:
+	
+	FESearch:
 	
 	j		win1
 #---------------- End Future Egypt Scene---------------------------------------
@@ -121,7 +135,14 @@ ancientAmerica:
 	# Handle the response
 	addi	$a0, $v0, 0			# Set the input parameter to response
 	addi	$a1, $zero, 3		# Set the scene code
+	la		$a2, AATalk			# Set the talk jump point
+	la		$a3, AASearch		# Set the search jump point
 	jal		handleOptions2
+	jr		$v0
+	
+	AATalk:
+	
+	AASearch:
 	
 	j		win1
 #--------------- End Ancient America Scene-------------------------------------
@@ -136,7 +157,14 @@ futureAmerica:
 	# Handle the response
 	addi	$a0, $v0, 0			# Set the input parameter to response
 	addi	$a1, $zero, 4		# Set the scene code
+	la		$a2, FATalk			# Set the talk jump point
+	la		$a3, FASearch		# Set the search jump point
 	jal		handleOptions2
+	jr		$v0
+	
+	FATalk:
+	
+	FASearch:
 	
 	j		win1
 #---------------- End Future America Scene-------------------------------------
@@ -337,7 +365,7 @@ dialouge:
 #------------------------------------------------------------------------------
 # handleOptions2 takes the int response to an options2 question (in $a0)
 # and an int scene-code (in $a1),
-# and decides what to do.
+# and returns an address in $v0 to work.
 handleOptions2:
 	# Push $ra onto stack.
 	addi	$sp, $sp, -4		# Decrement stack pointer
@@ -383,6 +411,8 @@ getSceneTalk:
 	addi	$sp, $sp, -4		# Decrement stack pointer
 	sw		$ra, 0($sp)			# Save $ra to stack
 	
+	addi	$v0, $a2, 0			#set the jump
+	
 	endGetSceneTalk:	
 		# Function is complete, pop $ra and return.
 		lw		$ra, 0($sp)			# Get return address from stack
@@ -397,6 +427,8 @@ getSceneSearch:
 	addi	$sp, $sp, -4		# Decrement stack pointer
 	sw		$ra, 0($sp)			# Save $ra to stack
 	
+	addi	$v0, $a3, 0			# set the outjumppoint
+	
 	endGetSceneSearch:	
 		# Function is complete, pop $ra and return.
 		lw		$ra, 0($sp)			# Get return address from stack
@@ -406,7 +438,7 @@ getSceneSearch:
 
 #------------------------------------------------------------------------------
 # accessInventory asks what item to use, and if it's the time machine, 
-# jumps to the new scene.
+# returns $v0 with the address for where to jump to.
 accessInventory:
 	# Push $ra onto stack.
 	addi	$sp, $sp, -4		# Decrement stack pointer
@@ -421,7 +453,6 @@ accessInventory:
 	bne		$v0, $t2, endAccessInventory
 	
 	jal		travelThroughTime
-	j		$v0
 	
 	endAccessInventory:	
 		# Function is complete, pop $ra and return.
