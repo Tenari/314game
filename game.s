@@ -367,16 +367,7 @@ handleOptions2:
 	handleOpenInven:
 		jal		displayInventory
 		
-		# Ask them which item to use.
-		la		$a0, Nothing
-		la		$a1, InvenAccess
-		jal		Scene
-		
-		addi	$t2, $zero, 2
-		bne		$v0, $t2, endHandleOptions2
-		
-		jal		travelThroughTime
-		j		$v0
+		jal		accessInventory
 		
 	endHandleOptions2:	
 		# Function is complete, pop $ra and return.
@@ -391,7 +382,6 @@ getSceneTalk:
 	# Push $ra onto stack.
 	addi	$sp, $sp, -4		# Decrement stack pointer
 	sw		$ra, 0($sp)			# Save $ra to stack
-
 	
 	endGetSceneTalk:	
 		# Function is complete, pop $ra and return.
@@ -406,9 +396,34 @@ getSceneSearch:
 	# Push $ra onto stack.
 	addi	$sp, $sp, -4		# Decrement stack pointer
 	sw		$ra, 0($sp)			# Save $ra to stack
-
 	
 	endGetSceneSearch:	
+		# Function is complete, pop $ra and return.
+		lw		$ra, 0($sp)			# Get return address from stack
+		addi	$sp, $sp, 4			# Increment stack pointer by 4
+		jr		$ra
+#---------- end handleOptions2 function ---------------------------------------
+
+#------------------------------------------------------------------------------
+# accessInventory asks what item to use, and if it's the time machine, 
+# jumps to the new scene.
+accessInventory:
+	# Push $ra onto stack.
+	addi	$sp, $sp, -4		# Decrement stack pointer
+	sw		$ra, 0($sp)			# Save $ra to stack
+	
+	# Ask them which item to use.
+	la		$a0, Nothing
+	la		$a1, InvenAccess
+	jal		Scene
+	
+	addi	$t2, $zero, 2
+	bne		$v0, $t2, endAccessInventory
+	
+	jal		travelThroughTime
+	j		$v0
+	
+	endAccessInventory:	
 		# Function is complete, pop $ra and return.
 		lw		$ra, 0($sp)			# Get return address from stack
 		addi	$sp, $sp, 4			# Increment stack pointer by 4
@@ -499,16 +514,16 @@ Dorm1:		.asciiz "You are bored, sitting at your desk, thinking about playing ano
 KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wall. Soon, you hear another, louder knock at the door. Answer it?\n"
 
 # The text for the Ancient Egypt section of the game
-AEscene1:	.asciiz "\nYou fly thorugh time and space!!!\n...\nIt's not as cool as it sounds.\nYou arrive in what you hope is the friendly section of Ancient Egypt.\n...\nIt's not.\nAn angry looking man walks up to you, yelling in a language that you don't speak.\nWhat do you do?\n"
+AEscene1:	.asciiz "\nYou fly through time and space!!!\n...\nIt's not as cool as it sounds.\nYou arrive in what you hope is the friendly section of Ancient Egypt.\n...\nIt's not.\nAn angry looking man walks up to you, yelling in a language that you don't speak.\nWhat do you do?\n"
 
 # The text for the Ancient America section of the game
-AAscene1:	.asciiz "\nYou fly thorugh time and space!!!\n...\nIt's pretty cool.\nYou arrive in what appears to be the friendly section of Ancient America.\n...\nA native girl approaches.\nWhat do you do?\n"
+AAscene1:	.asciiz "\nYou fly through time and space!!!\n...\nIt's pretty cool.\nYou arrive in what appears to be the friendly section of Ancient America.\n...\nA native girl approaches.\nWhat do you do?\n"
 
 # The text for the Future Egypt section of the game
-FEscene1:	.asciiz "\n\n"
+FEscene1:	.asciiz "\nYou coast through time and space.\n...\nIt takes longer than you expected.\nYou arrive in what looks like the unfriendly section of Future Egypt.\n...\nIt's not.\nA simling, attractive lady walks up to you.\nWhat do you do?\n"
 
 # The text for the Future America section of the game
-FAscene1:	.asciiz "\n\n"
+FAscene1:	.asciiz "\nYou trip and stumble through time and space.\n...\nIt was kind of painful.\nYou arrive in what you hope is not the unfriendly section of Future America.\n...\nIt is. All of Future America is the unfriendly section.\nAn angry 5 year-old boy runs up to you.\nWhat do you do?\n"
 
 loseMsg1:	.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!\n"
 loseMsg2:	.asciiz "\nJeff looks upset and leaves. The world goes back to being as humdrum as it was before.\nYOU LOSE!\n"
