@@ -257,6 +257,15 @@ ancientAmerica:
 		jal		Scene				# print and get response in $v0
 		
 		#handle the options2 to use the sword.
+		li		$t3, 3
+		bne		$v0, $t3, lose5
+		# else do this stuff
+		la		$a0, scenePA1.10.2		# load the scene setting message into $a0
+		la		$a1, Nothing		# talk/search/inventory
+		jal		Scene				# print and get response in $v0
+		
+		j		win2
+		
 		
 	# the not climb the tower branch
 	PABranch2:
@@ -271,7 +280,10 @@ ancientAmerica:
 		jal		Scene				# print and get response in $v0
 		
 		#handle options2
-		
+		li		$t3, 3
+		bne		$v0, $t3, lose7
+		# else do this stuff		
+		j		lose6
 		
 
 	# Set the scene, and offer the player the chance to answer the door.
@@ -352,6 +364,10 @@ futureAmerica:
 	
 	# The lose point for not joining the quest.
 	lose5:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, scenePA1.10.3		# load 'loseMsg3' address into $a0
+		syscall						# do the call
 		# system call to print lose message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, loseMsg5		# load 'loseMsg3' address into $a0
