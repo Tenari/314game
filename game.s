@@ -197,6 +197,31 @@ ancientAmerica:
 		la		$a0, scenePA17		# load the scene setting message into $a0
 		la		$a1, Options1		# yes/no
 		jal		Scene				# print and get response in $v0
+		
+		# They either said yes or they can't win, but don't know it yet.
+		addi	$a0, $v0, 0			# Put response into the first argument for yesContinueNoLose function
+		la		$a1, PAContinue3		# Put the 'wrong choice' label into second argument
+		la		$a2, PAaddSword		# Put the 'right choice' label into third argument
+		jal		yesContinueNoLose
+		j		$v0
+		
+		PAaddSword:
+			# Display the asciiart
+			li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+			la		$a0, swordImage		# Load the image into the argument.
+			syscall						# do the call
+			
+			jal		pause
+			
+			# Add the time machine he gave you into your inventory.
+			addi	$a0, $zero, 2		# 2 = array location
+			addi	$a1, $zero, 3		# 3 = sword item code
+			jal		modifyInventory
+	
+	PAContinue3:
+		
+		
+		
 
 	# Set the scene, and offer the player the chance to answer the door.
 #	la		$a0, AAscene1		# load the scene setting message into $a0
@@ -350,8 +375,12 @@ displayInventory:
 		beq		$t3, $t4, PrintWallet	# Print the wallet
 		
 		# If it's a 2, print time machine.
-		li		$t4, 2			# Set $t4 equal to 1
+		li		$t4, 2			# Set $t4 equal to 2
 		beq		$t3, $t4, printTimeMachine# Print the time machine
+		
+		# If it's a 3, print sword.
+		li		$t4, 3			# Set $t4 equal to 3
+		beq		$t3, $t4, printSword# Print the sword
 		
 		# another code check.
 		
@@ -367,6 +396,12 @@ displayInventory:
 		printTimeMachine:
 			li      $v0,4           # system call to print wallet
 			la      $a0, timeMachine# load the address of timeMachine into argument $a0
+			syscall
+			j		displayInventoryLoopCheck	# We printed the thing, so do the next item
+			
+		printSword:
+			li      $v0,4           # system call to print string
+			la      $a0, sword		# load the address of sword into argument $a0
 			syscall
 			j		displayInventoryLoopCheck	# We printed the thing, so do the next item
         
@@ -656,7 +691,14 @@ scenePA15:	.asciiz "\nLeif: \"My name is Leif, king of these northern lands. My 
 scenePA151:	.asciiz "\nYou: \"What can you tell me about Vis?\"\n"
 scenePA152:	.asciiz "\nLeif: \"Vis is a powerful sorcerer. My people who were lucky enough to flee these lands say he possesses the magic of the gods, able to call forth lightning like Thor himself. I have prayed to Thor and the gods to vanquish this enemy from our lands. The answer to my prayers came to me in a dream. I knew I had to set out with only my most trusted warriors, and it was foretold that I would find a hero on this voyage. I believe that you are the hero I have seen in my dreams. You are the one who will slay the wizard and bring peace back to these lands.\"\n"
 scenePA16:	.asciiz "\nYou: \"I will join you and your men, but I have no weapons with which to fight.\"\n"
+<<<<<<< HEAD
 scenePA17:	.asciiz "\nLeif: \"Here is my finest sword.\�\nLeif presents a large polished sword. In its hilt, carved runes delicately inlaid with gold and silver. Take the sword? \n"
+=======
+scenePA17:	.asciiz "\nLeif: \"Here is my finest sword.\"\nLeif presents a large polished sword. In its hilt, carved runes delicately inlaid with gold and silver. Take the sword? \n"
+scenePA18:	.asciiz "\nYou follow the warriors west, past the smoldering ruins of what once was a large settlement. In the fields and dirt paths, you see multiple piles of ash. Ahead you see a gray stone tower, rising above the trees.\n"
+
+scenePA19:	.asciiz "\nAs you approach the tower, Leif commands that everyone hold their positions. He starts coming over to you. \nLeif: \"Hero, let me and my men charge the entrance to the tower and provide a distraction as you climb to the sole window and enter from the top.\"\nClimb the tower?\n"
+>>>>>>> adds sword
 
 
 # The text for the Future Egypt section of the game
@@ -683,6 +725,7 @@ InvenAccess:.asciiz "Which item would you like to use? (number left to right fro
 InvenHead:	.asciiz "\nYou are carrying:\n["
 wallet:		.asciiz "a wallet, "
 timeMachine:.asciiz "a hand-dandy time machine, "
+sword:		.asciiz "a sword, "
 InvenFoot:	.asciiz "]\n"
 
 diamond:	.asciiz "      ^\n     /|\\n    / ^ \\n   / / \ \\n  / / ^ \ \\n  \ \ v / /\n   \ \ / /\n    \ v /\n     \|/\n      v\n"
