@@ -79,6 +79,8 @@ main:
 		
 		jal		travelThroughTime	# Gets the address to jump to in $v0
 		j		$v0					# Jump to the address
+		
+#---------- End First Scene: In the Dorm----------------------------------
 	
 	win1:
 		# system call to print win message 
@@ -87,8 +89,14 @@ main:
 		syscall						# do the call
 		
 		j 		end					# GAME IS OVER, so go to end
+	
+	win2:
+		# system call to print win message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, winMsg2		# load 'winMsg1' string's address into $a0
+		syscall						# do the call
 		
-#---------- End First Scene: In the Dorm----------------------------------
+		j 		end					# GAME IS OVER, so go to end
 
 #------------------- Ancient Egypt Scene CODE: 1-------------------------------
 ancientEgypt:
@@ -339,6 +347,30 @@ futureAmerica:
 		# system call to print lose message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, loseMsg4		# load 'loseMsg3' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+	
+	# The lose point for not joining the quest.
+	lose5:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg5		# load 'loseMsg3' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+	
+	# The lose point for not joining the quest.
+	lose6:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg6		# load 'loseMsg3' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+	
+	# The lose point for not joining the quest.
+	lose7:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg7		# load 'loseMsg3' address into $a0
 		syscall						# do the call
 		j		end					# GAME IS OVER, so go to end
 #------------- End Lose Points/Labels ------------------------------------
