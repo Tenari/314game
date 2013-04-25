@@ -137,17 +137,17 @@ futureEgypt:
 #------------------- Ancient America Scene CODE: 3-----------------------------
 ancientAmerica:
 	# Set the scene, forcing the player to press enter to continue
-	la		$a0, scenePA11		# load the scene setting message into $a0
+	la		$a0, scenePA1.1		# load the scene setting message into $a0
 	la		$a1, Nothing		# No options--just enter to continue
 	jal		Scene				# print and get response in $v0
 	
 	# see ship and burly men
-	la		$a0, scenePA12		# load the scene setting message into $a0
+	la		$a0, scenePA1.2		# load the scene setting message into $a0
 	la		$a1, Nothing		# No options--just enter to continue
 	jal		Scene				# print and get response in $v0
 	
 	# Who are you, and what are you doing here?
-	la		$a0, scenePA13		# load the scene setting message into $a0
+	la		$a0, scenePA1.3		# load the scene setting message into $a0
 	la		$a1, Options1		# yes/no
 	jal		Scene				# print and get response in $v0
 	
@@ -160,12 +160,12 @@ ancientAmerica:
 	
 	PAContinue1:
 		# Your answer
-		la		$a0, scenePA14		# load the scene setting message into $a0
+		la		$a0, scenePA1.4		# load the scene setting message into $a0
 		la		$a1, Nothing		# No options--just enter to continue
 		jal		Scene				# print and get response in $v0
 		
 		# His response
-		la		$a0, scenePA15		# load the scene setting message into $a0
+		la		$a0, scenePA1.5		# load the scene setting message into $a0
 		la		$a1, Options5		# yes/no/talk
 		jal		Scene				# print and get response in $v0
 		
@@ -178,23 +178,23 @@ ancientAmerica:
 		
 		morePATalk:
 			# Your answer
-			la		$a0, scenePA151		# load the scene setting message into $a0
+			la		$a0, scenePA1.5.1		# load the scene setting message into $a0
 			la		$a1, Nothing		# No options--just enter to continue
 			jal		Scene				# print and get response in $v0
 			
 			# His response
-			la		$a0, scenePA152		# load the scene setting message into $a0
+			la		$a0, scenePA1.5.2		# load the scene setting message into $a0
 			la		$a1, Nothing		# No options--just enter to continue
 			jal		Scene				# print and get response in $v0
 	
 	PAContinue2:
 		# Your answer
-		la		$a0, scenePA16		# load the scene setting message into $a0
+		la		$a0, scenePA1.6		# load the scene setting message into $a0
 		la		$a1, Nothing		# No options--just enter to continue
 		jal		Scene				# print and get response in $v0
 		
 		# His response
-		la		$a0, scenePA17		# load the scene setting message into $a0
+		la		$a0, scenePA1.7		# load the scene setting message into $a0
 		la		$a1, Options1		# yes/no
 		jal		Scene				# print and get response in $v0
 		
@@ -683,17 +683,17 @@ AEscene1:	.asciiz "\nYou fly through time and space!!!\n...\nIt's not as cool as
 
 # The text for the Ancient America section of the game
 AAscene1:	.asciiz "\nYou fly through time and space!!!\n...\nIt's pretty cool.\nYou arrive in what appears to be the friendly section of Ancient America.\n...\nA native girl approaches.\nWhat do you do?\n"
-scenePA11:	.asciiz "\nRaining stars awaken the dark sky. A blazing fire pouring down, you drift into unconsciousness.\n"
-scenePA12:	.asciiz "\nYou open your eyes, squinting at the bright sunlight.You are on a wooden ship in the ocean.You look around and see 20 burly men clad in leather and metal, rowing toward a large landmass. One of them with a large red beard approaches you.\n"
-scenePA13:	.asciiz "\n ?: \"So, you're awake now, perhaps you can tell me who you are and what you're doing here?\"\nYou see the large man grasping an ornate poleaxe, glimmering in the sunlight.\n"
-scenePA14:	.asciiz "\nYou: \"I've come from a far beyond time and land, seeking to go on an adventure!\"\n"
-scenePA15:	.asciiz "\nLeif: \"My name is Leif, king of these northern lands. My men found you hovering above the sea in a trance-like state. They wanted to kill you, believing you were an agent of the wizard, Vis, that has plagued our colony in Vinland. We are about to land in Vinland as we speak, and after we are heading to the wizard�s tower just west of our settlement. I have selected this small, elite group of berserkers to end his reign of terror over our lands. If what you say is true, then join our quest.\"\n"
-scenePA151:	.asciiz "\nYou: \"What can you tell me about Vis?\"\n"
-scenePA152:	.asciiz "\nLeif: \"Vis is a powerful sorcerer. My people who were lucky enough to flee these lands say he possesses the magic of the gods, able to call forth lightning like Thor himself. I have prayed to Thor and the gods to vanquish this enemy from our lands. The answer to my prayers came to me in a dream. I knew I had to set out with only my most trusted warriors, and it was foretold that I would find a hero on this voyage. I believe that you are the hero I have seen in my dreams. You are the one who will slay the wizard and bring peace back to these lands.\"\n"
-scenePA16:	.asciiz "\nYou: \"I will join you and your men, but I have no weapons with which to fight.\"\n"
-scenePA17:	.asciiz "\nLeif: \"Here is my finest sword.\"\nLeif presents a large polished sword. In its hilt, carved runes delicately inlaid with gold and silver. Take the sword? \n"
-scenePA18:	.asciiz "\nYou follow the warriors west, past the smoldering ruins of what once was a large settlement. In the fields and dirt paths, you see multiple piles of ash. Ahead you see a gray stone tower, rising above the trees.\n"
-scenePA19:	.asciiz "\nAs you approach the tower, Leif commands that everyone hold their positions. He starts coming over to you. \nLeif: \"Hero, let me and my men charge the entrance to the tower and provide a distraction as you climb to the sole window and enter from the top.\"\nClimb the tower?\n"
+scenePA1.1:	.asciiz "\nRaining stars awaken the dark sky. A blazing fire pouring down, you drift into unconsciousness.\n"
+scenePA1.2:	.asciiz "\nYou open your eyes, squinting at the bright sunlight.You are on a wooden ship in the ocean.You look around and see 20 burly men clad in leather and metal, rowing toward a large landmass. One of them with a large red beard approaches you.\n"
+scenePA1.3:	.asciiz "\n ?: \"So, you're awake now, perhaps you can tell me who you are and what you're doing here?\"\nYou see the large man grasping an ornate poleaxe, glimmering in the sunlight.\n"
+scenePA1.4:	.asciiz "\nYou: \"I've come from a far beyond time and land, seeking to go on an adventure!\"\n"
+scenePA1.5:	.asciiz "\nLeif: \"My name is Leif, king of these northern lands. My men found you hovering above the sea in a trance-like state. They wanted to kill you, believing you were an agent of the wizard, Vis, that has plagued our colony in Vinland. We are about to land in Vinland as we speak, and after we are heading to the wizard�s tower just west of our settlement. I have selected this small, elite group of berserkers to end his reign of terror over our lands. If what you say is true, then join our quest.\"\n"
+scenePA1.5.1:	.asciiz "\nYou: \"What can you tell me about Vis?\"\n"
+scenePA1.5.2:	.asciiz "\nLeif: \"Vis is a powerful sorcerer. My people who were lucky enough to flee these lands say he possesses the magic of the gods, able to call forth lightning like Thor himself. I have prayed to Thor and the gods to vanquish this enemy from our lands. The answer to my prayers came to me in a dream. I knew I had to set out with only my most trusted warriors, and it was foretold that I would find a hero on this voyage. I believe that you are the hero I have seen in my dreams. You are the one who will slay the wizard and bring peace back to these lands.\"\n"
+scenePA1.6:	.asciiz "\nYou: \"I will join you and your men, but I have no weapons with which to fight.\"\n"
+scenePA1.7:	.asciiz "\nLeif: \"Here is my finest sword.\"\nLeif presents a large polished sword. In its hilt, carved runes delicately inlaid with gold and silver. Take the sword? \n"
+scenePA1.8:	.asciiz "\nYou follow the warriors west, past the smoldering ruins of what once was a large settlement. In the fields and dirt paths, you see multiple piles of ash. Ahead you see a gray stone tower, rising above the trees.\n"
+scenePA1.9:	.asciiz "\nAs you approach the tower, Leif commands that everyone hold their positions. He starts coming over to you. \nLeif: \"Hero, let me and my men charge the entrance to the tower and provide a distraction as you climb to the sole window and enter from the top.\"\nClimb the tower?\n"
 
 
 # The text for the Future Egypt section of the game
