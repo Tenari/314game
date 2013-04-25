@@ -39,6 +39,8 @@ main:
 		la		$a1, jeffIntro1
 		jal		dialouge
 		
+		jal		pause
+		
 		# Print jeff's second line of dialouge
 		la		$a0, jeff
 		la		$a1, jeffIntro2
@@ -57,7 +59,14 @@ main:
 		j		$v0
 		
 	dormContinue2:
-	#
+	# More stuff happens.
+		# Display the asciiart
+		li		$v0, 4			# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, TMimg		# Load the image into the argument.
+		syscall					# do the call
+		
+		jal		pause
+		
 		# Add the time machine he gave you into your inventory.
 		addi	$a0, $zero, 1
 		addi	$a1, $zero, 2
@@ -214,6 +223,18 @@ Scene:
 	# function is complete, return.
 		jr $ra
 #---------- end Scene function ------------------------------------------
+
+#-------------------------------------------------------------------------	
+# The pause function forces the user to press enter to continue the game.
+# warning, pause will destroy $v0.
+pause:
+	# system call to pause
+	li		$v0, 5			# load appropriate system call code into register $v0 (read int is code 5)
+	syscall	
+	
+	# function is complete, return.
+	jr $ra
+#---------- end pause function ------------------------------------------
 
 #-------------------------------------------------------------------------	
 # The displayInventory function prints the array that holds the inventory, 
@@ -588,6 +609,30 @@ betterDiamond: .asciiz "
          '. \    / .'
            '.\  /.'
              '\/'"
+TMimg:		.asciiz "You got a Handy-Dandy Time Machine!
+           NMMMMMZ    $M
+          .MM    8MMMMMM
+           IMMMMMMM    
+                DMMMMMMMMMMM? 
+  ..  DMMMMMMMMMM          IMMM  
+    MM  ......................MM
+    MM  .DMMMMMMMMMMMMMMM     MM
+    MM  ..M............ M.....MM
+    MM  ..MM............M.....MM
+    IM  ..MMMMMMMMMMMMMMM.....MM
+    MM          ...............M
+    MM   . . . =MMMMMMMMMMM...=M
+    MM     DMMMM7       ..MM..MM
+    MM   .M$ . .......=?..MM..MM
+    MM   .M. 7M.......MM..MM..MM
+     M    M     ..........MM..MM
+     M   .M. . ...........MM..MM
+     M    M    M.....=?...MM..M 
+     M   NM. .IZ.....MM....M..M.
+     M   MM? . ...........NM..M.
+  .. M..... $MMMMMMMMMMMMM7 .=M. 
+  .. M  .................. NMM$.
+ ... MMMMMMMMMMMMMMMMMMMMMMM\n"
 
 travel1:	.asciiz "Where do you want to go?\n"
 travel2:	.asciiz "When do you want to get there?\n"
