@@ -136,22 +136,84 @@ futureEgypt:
 
 #------------------- Ancient America Scene CODE: 3-----------------------------
 ancientAmerica:
-	# Set the scene, and offer the player the chance to answer the door.
-	la		$a0, AAscene1		# load the scene setting message into $a0
-	la		$a1, Options2		# Basic scene options
+	# Set the scene, forcing the player to press enter to continue
+	la		$a0, scenePA11		# load the scene setting message into $a0
+	la		$a1, Nothing		# No options--just enter to continue
 	jal		Scene				# print and get response in $v0
 	
+	# see ship and burly men
+	la		$a0, scenePA12		# load the scene setting message into $a0
+	la		$a1, Nothing		# No options--just enter to continue
+	jal		Scene				# print and get response in $v0
+	
+	# Who are you, and what are you doing here?
+	la		$a0, scenePA13		# load the scene setting message into $a0
+	la		$a1, Options1		# yes/no
+	jal		Scene				# print and get response in $v0
+	
+	# They either said yes or they lose.
+	addi	$a0, $v0, 0			# Put response into the first argument for yesContinueNoLose function
+	la		$a1, lose3			# Put the 'wrong choice' label into second argument
+	la		$a2, PAContinue1	# Put the 'right choice' label into third argument
+	jal		yesContinueNoLose
+	j		$v0
+	
+	PAContinue1:
+		# Your answer
+		la		$a0, scenePA14		# load the scene setting message into $a0
+		la		$a1, Nothing		# No options--just enter to continue
+		jal		Scene				# print and get response in $v0
+		
+		# His response
+		la		$a0, scenePA15		# load the scene setting message into $a0
+		la		$a1, Options5		# yes/no/talk
+		jal		Scene				# print and get response in $v0
+		
+		# Handle response
+		addi	$t2, $zero, 2
+		beq		$v0, $t2, lose4
+		addi	$t3, $zero, 3
+		beq		$v0, $t3, morePATalk
+		j		PAContinue2
+		
+		morePATalk:
+			# Your answer
+			la		$a0, scenePA151		# load the scene setting message into $a0
+			la		$a1, Nothing		# No options--just enter to continue
+			jal		Scene				# print and get response in $v0
+			
+			# His response
+			la		$a0, scenePA152		# load the scene setting message into $a0
+			la		$a1, Nothing		# No options--just enter to continue
+			jal		Scene				# print and get response in $v0
+	
+	PAContinue2:
+		# Your answer
+		la		$a0, scenePA16		# load the scene setting message into $a0
+		la		$a1, Nothing		# No options--just enter to continue
+		jal		Scene				# print and get response in $v0
+		
+		# His response
+		la		$a0, scenePA17		# load the scene setting message into $a0
+		la		$a1, Options1		# yes/no
+		jal		Scene				# print and get response in $v0
+
+	# Set the scene, and offer the player the chance to answer the door.
+#	la		$a0, AAscene1		# load the scene setting message into $a0
+#	la		$a1, Options2		# Basic scene options
+#	jal		Scene				# print and get response in $v0
+	
 	# Handle the response
-	addi	$a0, $v0, 0			# Set the input parameter to response
-	addi	$a1, $zero, 3		# Set the scene code
-	la		$a2, AATalk			# Set the talk jump point
-	la		$a3, AASearch		# Set the search jump point
-	jal		handleOptions2
-	jr		$v0
+#	addi	$a0, $v0, 0			# Set the input parameter to response
+#	addi	$a1, $zero, 3		# Set the scene code
+#	la		$a2, AATalk			# Set the talk jump point
+#	la		$a3, AASearch		# Set the search jump point
+#	jal		handleOptions2
+#	jr		$v0
 	
-	AATalk:
+#	AATalk:
 	
-	AASearch:
+#	AASearch:
 	
 	j		win1
 #--------------- End Ancient America Scene-------------------------------------
@@ -193,6 +255,22 @@ futureAmerica:
 		# system call to print lose message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, loseMsg2		# load 'loseMsg2' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+		
+	# The lose point for not explaining who you are.
+	lose3:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg3		# load 'loseMsg3' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+		
+	# The lose point for not joining the quest.
+	lose4:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg4		# load 'loseMsg3' address into $a0
 		syscall						# do the call
 		j		end					# GAME IS OVER, so go to end
 #------------- End Lose Points/Labels ------------------------------------
@@ -570,6 +648,16 @@ AEscene1:	.asciiz "\nYou fly through time and space!!!\n...\nIt's not as cool as
 
 # The text for the Ancient America section of the game
 AAscene1:	.asciiz "\nYou fly through time and space!!!\n...\nIt's pretty cool.\nYou arrive in what appears to be the friendly section of Ancient America.\n...\nA native girl approaches.\nWhat do you do?\n"
+scenePA11:	.asciiz "\nRaining stars awaken the dark sky. A blazing fire pouring down, you drift into unconsciousness.\n"
+scenePA12:	.asciiz "\nYou open your eyes, squinting at the bright sunlight.You are on a wooden ship in the ocean.You look around and see 20 burly men clad in leather and metal, rowing toward a large landmass. One of them with a large red beard approaches you.\n"
+scenePA13:	.asciiz "\n ?: \"So, you're awake now, perhaps you can tell me who you are and what you're doing here?\"\nYou see the large man grasping an ornate poleaxe, glimmering in the sunlight.\n"
+scenePA14:	.asciiz "\nYou: \"I’ve come from a far beyond time and land, seeking to slay the wizard, Vis, and rescue my true love.\"\n"
+scenePA15:	.asciiz "\nLeif: \”My name is Leif, king of these northern lands. My men found you hovering above the sea in a trance-like state. They wanted to kill you, believing you were an agent of the wizard that has plagued our colony in Vinland. We are about to land in Vinland as we speak, and after we are heading to the wizard’s tower just west of our settlement. I have selected this small, elite group of berserkers to end Vis’ reign of terror over our lands. If what you say is true, then join our quest.\"\n"
+scenePA151:	.asciiz "\nYou: \"What can you tell me about Vis?\”\n"
+scenePA152:	.asciiz "\nLeif: \"Vis is a powerful sorcerer. My people who were lucky enough to flee these lands say he possesses the magic of the gods, able to call forth lightning like Thor himself. I have prayed to Thor and the gods to vanquish this enemy from our lands. The answer to my prayers came to me in a dream. I knew I had to set out with only my most trusted warriors, and it was foretold that I would find a hero on this voyage. I believe that you are the hero I have seen in my dreams. You are the one who will slay the wizard and bring peace back to these lands.\”\n"
+scenePA16:	.asciiz "\nYou: \"I will join you and your men, but I have no weapons with which to fight.\”\n"
+scenePA17:	.asciiz "\nLeif: \"Here is my finest sword.\”\nLeif presents a large polished sword. In its hilt, carved runes delicately inlaid with gold and silver. Take the sword? \n"
+
 
 # The text for the Future Egypt section of the game
 FEscene1:	.asciiz "\nYou coast through time and space.\n...\nIt takes longer than you expected.\nYou arrive in what looks like the unfriendly section of Future Egypt.\n...\nIt's not.\nA simling, attractive lady walks up to you.\nWhat do you do?\n"
@@ -579,6 +667,8 @@ FAscene1:	.asciiz "\nYou trip and stumble through time and space.\n...\nIt was k
 
 loseMsg1:	.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!\n"
 loseMsg2:	.asciiz "\nJeff looks upset and leaves. The world goes back to being as humdrum as it was before.\nYOU LOSE!\n"
+loseMsg3:	.asciiz "\nYou quickly leap forward and slap the man in the face. He swings his large axe and cuts you in two.\nYOU LOSE!\n"
+loseMsg4:	.asciiz "\nLeif grows impatient with your insolence. He decides to sacrifice you to Odin so that victory will be favorable in their endeavor.\nYOU LOSE!\n"
 
 meetJeff:	.asciiz "\nYou answer the door, and a strange man in a perfectly white suit comes in.\n"
 jeff:		.asciiz "Jeff: "
@@ -641,6 +731,7 @@ Options1:	.asciiz "[yes = 1, no = 2]\n"							# Basic yes/no
 Options2:	.asciiz "[talk = 1, search = 2, open inventory = 3]\n"	# Usual scene options.
 Options3:	.asciiz "[Egypt = 1, America = 2]"						# Location travel options
 Options4:	.asciiz "[Ancient Times = 1, Twenty years ahead = 2]"	# Time travel options
+Options5:	.asciiz "[join quest = 1, don't join = 2, talk more = 3]"
 Prompt:   	.asciiz "\nWell? => "
 Again:		.asciiz "\n\n--------------------------------------------------------------------------------\nPlay Again?\n"
 
