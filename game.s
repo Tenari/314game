@@ -302,8 +302,6 @@ ancientAmerica:
 #	AATalk:
 	
 #	AASearch:
-	
-	j		win1
 #--------------- End Ancient America Scene-------------------------------------
 
 #-------------------- Future America Scene CODE: 4-----------------------------
