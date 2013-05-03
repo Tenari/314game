@@ -770,7 +770,7 @@ Dorm1:		.asciiz "You are bored, sitting at your desk, thinking about playing ano
 KnockAgain:	.asciiz "\nYou ignore the knocking, being too busy staring at the wall. Soon, you hear another, louder knock at the door. Answer it?\n"
 
 # The text for the Ancient Egypt section of the game
-AEscene1:	.asciiz "\nYou fly through time and space!!!\n...\nIt's not as cool as it sounds.\nYou arrive in what you hope is the friendly section of Ancient Egypt.\n...\nIt's not.\nAn angry looking man walks up to you, yelling in a language that you don't speak.\nWhat do you do?\n"
+scenePE1:	.asciiz "\n You open your eyes to see hundreds of people bowing before you. A man with a golden dress and staff approaches you.\n Ka: \"Ah, the gods have answered us! You were sent down to lead us! Please, allow me to place the crown on your head.\" Do you let him?\n"
 
 # The text for the Ancient America section of the game
 AAscene1:	.asciiz "\nYou fly through time and space!!!\n...\nIt's pretty cool.\nYou arrive in what appears to be the friendly section of Ancient America.\n...\nA native girl approaches.\nWhat do you do?\n"
@@ -794,10 +794,19 @@ scenePA1.11.1:	.asciiz "\nBut now everything grows quiet. You funnel into the do
 
 
 # The text for the Future Egypt section of the game
-FEscene1:	.asciiz "\nYou coast through time and space.\n...\nIt takes longer than you expected.\nYou arrive in what looks like the unfriendly section of Future Egypt.\n...\nIt's not.\nA simling, attractive lady walks up to you.\nWhat do you do?\n"
+sceneFE1:	.asciiz "\n You stumble through space and time and land hard on sand. You look around and see a group of tanks approaching you! One of the tanks fires and you are torn to pieces.\nYOU LOSE!\n"
 
 # The text for the Future America section of the game
-FAscene1:	.asciiz "\nYou trip and stumble through time and space.\n...\nIt was kind of painful.\nYou arrive in what you hope is not the unfriendly section of Future America.\n...\nIt is. All of Future America is the unfriendly section.\nAn angry 5 year-old boy runs up to you.\nWhat do you do?\n"
+sceneFA1:	.asciiz "\nYou trip and stumble through time and space.\n...\nIt was kind of painful.\nYou arrive in what you hope is not the unfriendly section of Future America.\n...\nIt is. All of Future America is the unfriendly section.\nAn angry 5 year-old boy runs up to you asking you to follow him..\nDo you follow him?\n"
+sceneFA2:	.asciiz "\nYou ignore the boy and head down the road. You come across a large gathering of people split into two sides. One one side you see protesters holding picket signs, on the other you see armed guards with anti-riot gear. One of the protesters motions you to come to her. Do you go?\n"
+sceneFA3:	.asciiz "\n Lisa: \"Hello, my name is Lisa. We're here today protesting Halicorp's pollution of our city. For the past five years they've been poisoning our water supply, causing a massive increase in illness and death. The group here is just trying to raise awareness. Would you like to join our cause?\"\n"
+sceneFA3.1:	.asciiz "\n You: \"How bad is the situation in this city?\"\n"
+sceneFA3.2:	.asciiz "\n Lisa: \"You mean you don't know? The government is completely corrupt and corporations run this entire country. As a result, companies like Halicorp can get away with virtually anything. Those armed guards on the other side of the line are employed by Halicorp. They're not shooting us because it would be bad PR; but if we give them any inclination of violence they'll turn on us.\"\n"
+sceneFA4:	.asciiz "\n You: \"How can I help?\"\n"
+sceneFA5:	.asciiz "\n Lisa: \"Honestly, there's not much we can do other than spread the word and hope that people vote with their wallets to stop supporting Halicorp. Say, I've noticed you seem rather new around here. Who are you?\"\nTell her who you are?\n"
+sceneFA6:	.asciiz "\n You: \"I am actually a time traveller. I've come here from approximately 20 years in the past.\"\nFor some reason you feel comfortable admitting the truth around Lisa. You show her your handy-dandy-time-machine as proof.\n"
+sceneFA7:	.asciiz "\n Lisa appears to be stunned.\n Lisa: \"You can change what has happened to our country! You have the ability to change the future with your knowledge!\"\n"
+sceneFA8:	.asciiz "\n You ask how that would be possible. Lisa tells you that when the world hit peak-oil, there was a worldwide panic and the USA's creditors called in their debts. This bankrupted the nation, leaving the void of power to be snatched up by huge multinational corporations. A viable alternative energy was discover 5 years later, but by then it was too late. Lisa explains that since the new energy is open-source, that you can bring back the solution to your timeperiod and prevent the global meltdown that occurred. At least, that was the plan. Do you go along with it?\n"
 
 loseMsg1:	.asciiz "\nYou continue sitting at your desk. The knocking subsides, and you hear a voice on the other side of the door say, \"Well, I guess I could talk to George Washington...\".\nYou are left with the vague feeling that you just missed the opportunity of a lifetime.\nYOU LOSE!\n"
 loseMsg2:	.asciiz "\nJeff looks upset and leaves. The world goes back to being as humdrum as it was before.\nYOU LOSE!\n"
@@ -806,6 +815,12 @@ loseMsg4:	.asciiz "\nLeif grows impatient with your insolence. He decides to sac
 loseMsg5:	.asciiz "\nVis telports you 1000 years into the future. He shows you his empire that was built with magic and slavery. You are then teleported to a dark void where you will spend the rest of eternity alone.\nYOU LOSE!\n"
 loseMsg6:	.asciiz "\nYou take your sword and leap toward Vis on the platform. You thrust your sword towards his heart, but you miss and hit his shoulder. The platform disappears under your feet. As you fall to your death you see the rest of stairs retract and the men follow you into the pit.\nYOU LOSE!\n"
 loseMsg7:	.asciiz "\nYou open your mouth but no words come out. You see Leif jump onto the platform and cut off Vis' arm with his axe. Vis sends a shockwave towards Leif that propels him off the platform and down the pit. Other berserkers jump to the platform, but they too are repelled. As you stand there in silence you wait until the stair fully retracts, causing you to fall to your death with the other men.\nYOU LOSE!\n"
+loseMsg8:	.asciiz "\nThe boy leads you to the city docks where you are surrounded by a group of men. They beat you unconscious, steal your possessions, and dump you into the river where you drown. \nYOU LOSE!\n"
+loseMsg9:	.asciiz "\n You are pushed into the armed guards by rowdy protesters, and taken to a private jail. The guards can't find your DNA in their system, so they interrogate you. They discover your time machine and stop asking you questions. Then a large man enters the room and injects you with a syringe. You die a few minutes later.\nYOU LOSE! \n"
+loseMsg10:	.asciiz "\nYou decline and continue on your way. As you walk down the street you are stabbed by a random stranger and die. \nYOU LOSE!\n"
+loseMsg11:	.asciiz "\nYou refuse to reveal any information. You continue making friends among the protesters until the armed guards open fire on the crowd. You are shot.  \nYOU LOSE!\n"
+loseMsg12:	.asciiz "\nYou don't think that's a very good idea, playing around with global events. A fellow protester hears the proposal, however, and steals your time machine and runs off. You are now stuck 20 years in future America. You develop cancer a year later and die.\nYOU LOSE!\n"
+loseMsg13:	.asciiz "\nYou refuse and try to tell the man that you are not a god, nor a king. The crowd erupts in panic and anger, and soldiers come over and cut off your head.\nYOU LOSE!\n"
 
 meetJeff:	.asciiz "\nYou answer the door, and a strange man in a perfectly white suit comes in.\n"
 jeff:		.asciiz "Jeff: "
@@ -816,6 +831,8 @@ jeffOffer:	.asciiz "Jeff offers you a time machine. Take it?\n"
 
 winMsg1:	.asciiz "\nYou go on to have grand adventures.\nYOU WIN!\n"
 winMsg2:	.asciiz "\nThe princess is released from Vis' magic. She awakens to find you holding her hand. Leif and his berserkers make their way into the chamber and offer you their heartfelt thanks. Leif is reunited with his bride. You travel back to the present time, to your dorm room again, and you go on to live a happy life.\nYOU WIN!\n"
+winMsg3:	.asciiz "\nWith your newfound knowledge you head back in time and develop the world's best alternative to oil. Over the next few years, nations gradually decrease their oil imports, and peak-oil passes by without a panic. You go on to live a happy and healthy life.\nYOU WIN!\n"
+winMsg4:	.asciiz "\nThe magistrate places the crown on your head and you become the leader of these people. Your knowledge allows you to build the greatest empire the world has ever seen.\nYOU WIN!\n"
 
 InvenAccess:.asciiz "Which item would you like to use? (number left to right from 1)\n"
 InvenHead:	.asciiz "\nYou are carrying:\n["
