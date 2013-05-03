@@ -93,7 +93,23 @@ main:
 	win2:
 		# system call to print win message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
-		la		$a0, winMsg2		# load 'winMsg1' string's address into $a0
+		la		$a0, winMsg2		# load 'winMsg2' string's address into $a0
+		syscall						# do the call
+		
+		j 		end					# GAME IS OVER, so go to end
+		
+	win3:
+		# system call to print win message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, winMsg3		# load 'winMsg3' string's address into $a0
+		syscall						# do the call
+		
+		j 		end					# GAME IS OVER, so go to end
+		
+	win4:
+		# system call to print win message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, winMsg4		# load 'winMsg4' string's address into $a0
 		syscall						# do the call
 		
 		j 		end					# GAME IS OVER, so go to end
@@ -101,7 +117,7 @@ main:
 #------------------- Ancient Egypt Scene CODE: 1-------------------------------
 ancientEgypt:
 	# Set the scene, and offer the player the chance to answer the door.
-	la		$a0, AEscene1		# load the scene setting message into $a0
+	la		$a0, scenePE1		# load the scene setting message into $a0
 	la		$a1, Options2		# Basic scene options
 	jal		Scene				# print and get response in $v0
 	
@@ -123,7 +139,7 @@ ancientEgypt:
 #-------------------- Future Egypt Scene CODE: 2-------------------------------
 futureEgypt:
 	# Set the scene, and offer the player the chance to answer the door.
-	la		$a0, FEscene1		# load the scene setting message into $a0
+	la		$a0, sceneFE1		# load the scene setting message into $a0
 	la		$a1, Options2		# Basic scene options
 	jal		Scene				# print and get response in $v0
 	
@@ -307,7 +323,7 @@ ancientAmerica:
 #-------------------- Future America Scene CODE: 4-----------------------------
 futureAmerica:
 	# Set the scene, and offer the player the chance to answer the door.
-	la		$a0, FAscene1		# load the scene setting message into $a0
+	la		$a0, sceneFA1		# load the scene setting message into $a0
 	la		$a1, Options2		# Basic scene options
 	jal		Scene				# print and get response in $v0
 	
@@ -385,6 +401,48 @@ futureAmerica:
 		# system call to print lose message 
 		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
 		la		$a0, loseMsg7		# load 'loseMsg3' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+	
+	lose8:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg8		# load 'loseMsg8' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+	
+	lose9:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg9		# load 'loseMsg9' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+	
+	lose10:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg10		# load 'loseMsg10' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+		
+	lose11:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg11		# load 'loseMsg11' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+		
+	lose12:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg12		# load 'loseMsg12' address into $a0
+		syscall						# do the call
+		j		end					# GAME IS OVER, so go to end
+	
+	lose13:
+		# system call to print lose message 
+		li		$v0, 4				# load appropriate system call code into register $v0 (print string is code 4)
+		la		$a0, loseMsg13		# load 'loseMsg13' address into $a0
 		syscall						# do the call
 		j		end					# GAME IS OVER, so go to end
 #------------- End Lose Points/Labels ------------------------------------
