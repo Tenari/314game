@@ -300,46 +300,79 @@ ancientAmerica:
 		bne		$v0, $t3, lose7
 		# else do this stuff		
 		j		lose6
-		
 
-	# Set the scene, and offer the player the chance to answer the door.
-#	la		$a0, AAscene1		# load the scene setting message into $a0
-#	la		$a1, Options2		# Basic scene options
-#	jal		Scene				# print and get response in $v0
-	
-	# Handle the response
-#	addi	$a0, $v0, 0			# Set the input parameter to response
-#	addi	$a1, $zero, 3		# Set the scene code
-#	la		$a2, AATalk			# Set the talk jump point
-#	la		$a3, AASearch		# Set the search jump point
-#	jal		handleOptions2
-#	jr		$v0
-	
-#	AATalk:
-	
-#	AASearch:
 #--------------- End Ancient America Scene-------------------------------------
 
 #-------------------- Future America Scene CODE: 4-----------------------------
 futureAmerica:
 	# Set the scene, and offer the player the chance to answer the door.
 	la		$a0, sceneFA1		# load the scene setting message into $a0
-	la		$a1, Options2		# Basic scene options
+	la		$a1, Options1		# yes/no
 	jal		Scene				# print and get response in $v0
 	
-	# Handle the response
-	addi	$a0, $v0, 0			# Set the input parameter to response
-	addi	$a1, $zero, 4		# Set the scene code
-	la		$a2, FATalk			# Set the talk jump point
-	la		$a3, FASearch		# Set the search jump point
-	jal		handleOptions2
-	jr		$v0
+	li		$t2, 2
+	beq		$t2, $v0, FACont1
+	j		lose8
 	
-	FATalk:
+	FACont1:
+		la		$a0, sceneFA2		# load the scene setting message into $a0
+		la		$a1, Options1		# yes/no
+		jal		Scene				# print and get response in $v0
+		
+		li		$t1, 1
+		beq		$t1, $v0, FACont2
+		j		lose9
 	
-	FASearch:
-	
-	j		win1
+	FACont2:
+		la		$a0, sceneFA3		# load the scene setting message into $a0
+		la		$a1, Options5		# yes/no/talk
+		jal		Scene				# print and get response in $v0
+		
+		# Handle response
+		addi	$t2, $zero, 2
+		beq		$v0, $t2, lose10
+		addi	$t3, $zero, 3
+		beq		$v0, $t3, FATalk
+		j		FACont3
+		
+		FATalk:
+			la		$a0, sceneFA3.1		# load the scene setting message into $a0
+			la		$a1, Nothing		# blank
+			jal		Scene				# print and get response in $v0
+			
+			la		$a0, sceneFA3.2		# load the scene setting message into $a0
+			la		$a1, Nothing		# blank
+			jal		Scene				# print and get response in $v0
+			
+	FACont3:
+		la		$a0, sceneFA4		# load the scene setting message into $a0
+		la		$a1, Nothing		# blank
+		jal		Scene				# print and get response in $v0
+		
+		la		$a0, sceneFA5		# load the scene setting message into $a0
+		la		$a1, Options2		# yes/no
+		jal		Scene				# print and get response in $v0
+		
+		li		$t1, 1
+		beq		$t1, $v0, FACont4
+		j		lose11
+		
+	FACont4:
+		la		$a0, sceneFA6		# load the scene setting message into $a0
+		la		$a1, Nothing		# blank
+		jal		Scene				# print and get response in $v0
+		
+		la		$a0, sceneFA7		# load the scene setting message into $a0
+		la		$a1, Nothing		# blank
+		jal		Scene				# print and get response in $v0
+		
+		la		$a0, sceneFA8		# load the scene setting message into $a0
+		la		$a1, Options1		# yes/no
+		jal		Scene				# print and get response in $v0
+		
+		li		$t1, 1
+		beq		$t1, $v0, win3
+		j		lose12
 #---------------- End Future America Scene-------------------------------------
 
 #-------------- Lose Points/Labels ---------------------------------------
